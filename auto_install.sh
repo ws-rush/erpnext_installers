@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 
 # Checking Supported OS and distribution
 SUPPORTED_DISTRIBUTIONS=("Ubuntu" "Debian")
-SUPPORTED_VERSIONS=("22.04" "20.04" "11" "10" "9" "8")
+SUPPORTED_VERSIONS=("22.04" "20.04" "12" "11" "10" "9" "8")
 
 check_os() {
     local os_name=$(lsb_release -is)
@@ -146,16 +146,16 @@ else
 fi
 sleep 2
 
-# Check OS compatibility for Version 15
-if [[ "$bench_version" == "version-15" ]]; then
-    if [[ "$(lsb_release -si)" != "Ubuntu" ]]; then
-        echo -e "${RED}Your Distro is not supported for Version 15.${NC}"
-        exit 1
-    elif [[ "$(lsb_release -rs)" < "22.04" ]]; then
-        echo -e "${RED}Your Ubuntu version is below the minimum version required to support Version 15.${NC}"
-        exit 1
-    fi
-fi
+# # Check OS compatibility for Version 15
+# if [[ "$bench_version" == "version-15" ]]; then
+#     if [[ "$(lsb_release -si)" != "Ubuntu" ]]; then
+#         echo -e "${RED}Your Distro is not supported for Version 15.${NC}"
+#         exit 1
+#     elif [[ "$(lsb_release -rs)" < "22.04" ]]; then
+#         echo -e "${RED}Your Ubuntu version is below the minimum version required to support Version 15.${NC}"
+#         exit 1
+#     fi
+# fi
 
 # Check OS and version compatibility for all versions
 check_os
@@ -315,7 +315,7 @@ fi
 #Install bench
 echo -e "${YELLOW}Now let's install bench${NC}"
 sleep 2
-sudo pip3 install frappe-bench
+sudo -H pip3 install frappe-bench --break-system-packages
 
 #Initiate bench in frappe-bench folder, but get a supervisor can't restart bench error...
 echo -e "${YELLOW}Initialising bench in frappe-bench folder.${NC}" 
