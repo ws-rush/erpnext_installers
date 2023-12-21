@@ -11,9 +11,27 @@ To use this script, follow these steps:
 Make sure you install the latest package versions by updating system packages if you are running this script on a fresh Ubuntu machine.
 
 ```
-sudo apt update && sudo apt -y upgrade
+sudo apt update && sudo apt -y upgrade && sudo reboot
 ```
-and then reboot your machine 
+and then reboot your machine
+
+## install prerequest packages
+
+```
+sudo apt install git curl openssh-server nano lsb-release -y
+sudo systemctl enable --now ssh
+sudo ufw allow ssh
+```
+
+## create frappe user
+
+```
+sudo adduser frappe
+sudo usermod -aG sudo frappe
+sudo su frappe
+cd ~
+sudo chmod 777 -R /home/frappe/
+```
 
 # Installation:
 
@@ -39,10 +57,12 @@ Ubuntu 22.04 LTS,
 Ubuntu 20.04 LTS
 
 Debian 10 (Buster),
-Debian 11 (Bulls Eye)
+Debian 11 (Bullseye)
 
 # NOTE:
 
-Version 15 Compatibility is set to Ubuntu 22.04 LTS and above only. Other Distros or lower Ubuntu versions not supported for version 15 installation.
+- Version 15 Compatibility is set to Ubuntu 22.04 LTS and above only. Other Distros or lower Ubuntu versions not supported for version 15 installation.
+
+- Visit https://github.com/gavindsouza/awesome-frappe to learn about other apps you can install.
 Visit https://github.com/gavindsouza/awesome-frappe to learn about other apps you can install.
 
