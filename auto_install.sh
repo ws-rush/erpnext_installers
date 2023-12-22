@@ -185,7 +185,7 @@ sleep 2
 #Now let's install a couple of requirements: git, curl and pip
 echo -e "${YELLOW}Installing preliminary package requirements${NC}"
 sleep 3
-sudo apt install software-properties-common git curl -y
+sudo apt install software-properties-common git curl wget -y
 
 #Next we'll install the python environment manager...
 echo -e "${YELLOW}Installing python environment manager and other requirements...${NC}"
@@ -228,7 +228,7 @@ sudo cp /usr/local/bin/wkhtmlto* /usr/bin/ && \
 sudo chmod a+x /usr/bin/wk*
 sudo rm wk* && \
 sudo apt --fix-broken install -y && \
-sudo apt install fontconfig xvfb libfontconfig xfonts-base xfonts-75dpi libxrender1 -y && \
+sudo apt install fontconfig xvfb libfontconfig xfonts-base xfonts-75dpi libxrender1 cron -y && \
 
 echo -e "${GREEN}Done!${NC}"
 sleep 1
