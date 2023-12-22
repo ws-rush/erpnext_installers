@@ -2,64 +2,11 @@
 ########### erpnext v14+v15 on ubuntu 22.04 #######
 ###############################################
 
-
-#install ssh
-sudo apt install -y openssh-server
-sudo systemctl enable --now ssh
-sudo ufw allow ssh
-
-
-# check ssh service
-sudo systemctl status ssh
-
-
-
-## check ip
-hostname -I
-
-
-
-## connect  with putty 192.168.1.101 <<< your ip
-
-
-
-
-############### STEP 1 ############### 
-
-sudo apt update && sudo apt upgrade -y
-sudo reboot
-
-
-
-
-
-
-
 ############### STEP 2 ############### 
 
 sudo apt install  -y build-essential
 sudo apt install  -y --fix-broken
 sudo apt install  -y git supervisor nginx curl wget cron gnupg ca-certificates
-
-
-
-
-
-
-############### STEP 3 ############### 
-
-sudo adduser frappe
-sudo usermod -aG sudo frappe
-sudo nano /etc/sudoers
-su - frappe
-sudo chmod -R o+rx /home/frappe
-
-
-
-
-
-
-
 
 ############### STEP 4 ############### 
 
