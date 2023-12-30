@@ -30,7 +30,6 @@ sudo adduser frappe
 sudo usermod -aG sudo frappe
 sudo su frappe
 cd ~
-sudo chmod 777 -R /home/frappe/
 ```
 
 # Installation:

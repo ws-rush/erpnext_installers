@@ -114,12 +114,13 @@ sleep 3
 # Prompt user for version selection with a preliminary message
 echo -e "${YELLOW}Please enter the number of the corresponding ERPNext version you wish to install:${NC}"
 
-versions=("Version 13" "Version 14" "Version 15")
+versions=("Version 13" "Version 14" "Version 15" "Bench Only")
 select version_choice in "${versions[@]}"; do
     case $REPLY in
         1) bench_version="version-13"; break;;
         2) bench_version="version-14"; break;;
         3) bench_version="version-15"; break;;
+        4) bench_version="bench-only"; break;;
         *) echo -e "${RED}Invalid option. Please select a valid version.${NC}";;
     esac
 done
@@ -146,16 +147,16 @@ else
 fi
 sleep 2
 
-# # Check OS compatibility for Version 15
-# if [[ "$bench_version" == "version-15" ]]; then
-#     if [[ "$(lsb_release -si)" != "Ubuntu" ]]; then
-#         echo -e "${RED}Your Distro is not supported for Version 15.${NC}"
-#         exit 1
-#     elif [[ "$(lsb_release -rs)" < "22.04" ]]; then
-#         echo -e "${RED}Your Ubuntu version is below the minimum version required to support Version 15.${NC}"
-#         exit 1
-#     fi
-# fi
+# Check OS compatibility for Version 15
+if [[ "$bench_version" == "version-15" ]]; then
+    if [[ "$(lsb_release -si)" != "Ubuntu" ]]; then
+        echo -e "${RED}Your Distro is not supported for Version 15.${NC}"
+        exit 1
+    elif [[ "$(lsb_release -rs)" < "22.04" ]]; then
+        echo -e "${RED}Your Ubuntu version is below the minimum version required to support Version 15.${NC}"
+        exit 1
+    fi
+fi
 
 # Check OS and version compatibility for all versions
 check_os
@@ -315,7 +316,13 @@ fi
 #Install bench
 echo -e "${YELLOW}Now let's install bench${NC}"
 sleep 2
-sudo -H pip3 install frappe-bench --break-system-packages
+# sudo -H pip3 install frappe-bench --break-system-packages
+pip3 install frappe-bench --break-system-packages
+
+# continue if user select erpnext version
+if [[ "$bench_version" == "bench-only" ]]; then
+    exit
+fi
 
 #Initiate bench in frappe-bench folder, but get a supervisor can't restart bench error...
 echo -e "${YELLOW}Initialising bench in frappe-bench folder.${NC}" 
