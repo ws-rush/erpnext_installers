@@ -324,55 +324,71 @@ if [[ "$frappe_version" == "bench-only" ]]; then
     exit
 fi
 
-#Initiate bench in frappe-bench folder, but get a supervisor can't restart bench error...
-echo -e "${YELLOW}Initialising bench in frappe-bench folder.${NC}" 
+# #Initiate bench in frappe-bench folder, but get a supervisor can't restart bench error...
+# echo -e "${YELLOW}Initialising bench in frappe-bench folder.${NC}" 
+# echo -e "${LIGHT_BLUE}If you get a restart failed, don't worry, we will resolve that later.${NC}"
+# bench init frappe-bench --version $frappe_version --verbose --install-app erpnext --version $frappe_version
+# echo -e "${GREEN}Bench installation complete!${NC}"
+# sleep 1
+
+echo -e "${YELLOW}Initializing bench in frappe-bench folder.${NC}" 
 echo -e "${LIGHT_BLUE}If you get a restart failed, don't worry, we will resolve that later.${NC}"
-bench init frappe-bench --version $frappe_version --verbose --install-app erpnext --version $frappe_version
+
+# Prompt the user to choose whether to install ERPNext or not
+read -p "Do you want to install ERPNext? (y/n): " install_erpnext
+
+if [ "$install_erpnext" = "y" ] || [ "$install_erpnext" = "Y" ]; then
+    # Install Frappe and ERPNext
+    bench init frappe-bench --version $frappe_version --verbose --install-app erpnext --version $frappe_version
+
+    # Prompt user for site name
+    echo -e "${YELLOW}Preparing for Production installation. This could take a minute... or two so please be patient.${NC}"
+    read -p "Enter the site name (If you wish to install SSL later, please enter a FQDN): " site_name
+    sleep 1
+    adminpasswrd=$(ask_twice "Enter the Administrator password" "true")
+    echo -e "\n"
+    sleep 2
+    # Install expect tool only if needed
+    echo $passwrd | sudo -S apt -qq install expect -y
+
+    echo -e "${YELLOW}Now setting up your site. This might take a few minutes. Please wait...${NC}"
+    sleep 1
+    # Change directory to frappe-bench
+    cd frappe-bench && \
+
+    sudo chmod -R o+rx /home/$(echo $USER)
+
+
+    # Create new site using expect
+    export SITE_NAME=$site_name
+    export SQL_PASSWD=$sqlpasswrd
+    export ADMIN_PASSWD=$adminpasswrd
+
+    #Set Administrator password.
+    SITE_SETUP=$(expect -c "
+    set timeout 300
+    set sitename \$env(SITE_NAME)
+    set sqlpwd \$env(SQL_PASSWD)
+    set adminpwd \$env(ADMIN_PASSWD)
+    spawn bench new-site \$sitename --install-app erpnext
+    expect \"MySQL root password:\"
+    send \"\$sqlpwd\r\"
+    expect \"Set Administrator password:\"
+    sleep 20
+    send \"\$adminpwd\r\"
+    expect \"Re-enter Administrator password:\"
+    sleep 20
+    send \"\$adminpwd\r\"
+    expect eof
+    ")
+    echo "$SITE_SETUP"
+else
+    # Initiate Frappe only
+    bench init frappe-bench --version $frappe_version --verbose
+fi
+
 echo -e "${GREEN}Bench installation complete!${NC}"
 sleep 1
-
-# Prompt user for site name
-echo -e "${YELLOW}Preparing for Production installation. This could take a minute... or two so please be patient.${NC}"
-read -p "Enter the site name (If you wish to install SSL later, please enter a FQDN): " site_name
-sleep 1
-adminpasswrd=$(ask_twice "Enter the Administrator password" "true")
-echo -e "\n"
-sleep 2
-# Install expect tool only if needed
-echo $passwrd | sudo -S apt -qq install expect -y
-
-echo -e "${YELLOW}Now setting up your site. This might take a few minutes. Please wait...${NC}"
-sleep 1
-# Change directory to frappe-bench
-cd frappe-bench && \
-
-sudo chmod -R o+rx /home/$(echo $USER)
-
-
-# Create new site using expect
-export SITE_NAME=$site_name
-export SQL_PASSWD=$sqlpasswrd
-export ADMIN_PASSWD=$adminpasswrd
-
-#Set Administrator password.
-SITE_SETUP=$(expect -c "
-set timeout 300
-set sitename \$env(SITE_NAME)
-set sqlpwd \$env(SQL_PASSWD)
-set adminpwd \$env(ADMIN_PASSWD)
-spawn bench new-site \$sitename --install-app erpnext
-expect \"MySQL root password:\"
-send \"\$sqlpwd\r\"
-expect \"Set Administrator password:\"
-sleep 20
-send \"\$adminpwd\r\"
-expect \"Re-enter Administrator password:\"
-sleep 20
-send \"\$adminpwd\r\"
-expect eof
-")
-echo "$SITE_SETUP"
-
 
 echo -e "${LIGHT_BLUE}Would you like to continue with production install? (yes/no)${NC}"
 read -p "Response: " continue_prod
