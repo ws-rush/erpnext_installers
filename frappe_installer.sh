@@ -117,10 +117,10 @@ echo -e "${YELLOW}Please enter the number of the corresponding ERPNext version y
 versions=("Version 13" "Version 14" "Version 15" "Bench Only")
 select version_choice in "${versions[@]}"; do
     case $REPLY in
-        1) bench_version="version-13"; break;;
-        2) bench_version="version-14"; break;;
-        3) bench_version="version-15"; break;;
-        4) bench_version="bench-only"; break;;
+        1) frappe_version="version-13"; break;;
+        2) frappe_version="version-14"; break;;
+        3) frappe_version="version-15"; break;;
+        4) frappe_version="bench-only"; break;;
         *) echo -e "${RED}Invalid option. Please select a valid version.${NC}";;
     esac
 done
@@ -148,7 +148,7 @@ fi
 sleep 2
 
 # Check OS compatibility for Version 15
-if [[ "$bench_version" == "version-15" ]]; then
+if [[ "$frappe_version" == "version-15" ]]; then
     if [[ "$(lsb_release -si)" != "Ubuntu" ]]; then
         echo -e "${RED}Your Distro is not supported for Version 15.${NC}"
         exit 1
@@ -293,7 +293,7 @@ echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This
 source ~/.profile
 
 # Conditional Node.js installation based on the version of ERPNext selected
-if [[ "$bench_version" == "version-15" ]]; then
+if [[ "$frappe_version" == "version-15" ]]; then
     nvm install 18
     node_version="18"
 else
@@ -320,14 +320,14 @@ sleep 2
 pip3 install frappe-bench --break-system-packages
 
 # continue if user select erpnext version
-if [[ "$bench_version" == "bench-only" ]]; then
+if [[ "$frappe_version" == "bench-only" ]]; then
     exit
 fi
 
 #Initiate bench in frappe-bench folder, but get a supervisor can't restart bench error...
 echo -e "${YELLOW}Initialising bench in frappe-bench folder.${NC}" 
 echo -e "${LIGHT_BLUE}If you get a restart failed, don't worry, we will resolve that later.${NC}"
-bench init frappe-bench --version $bench_version --verbose --install-app erpnext --version $bench_version
+bench init frappe-bench --version $frappe_version --verbose --install-app erpnext --version $frappe_version
 echo -e "${GREEN}Bench installation complete!${NC}"
 sleep 1
 
@@ -477,7 +477,7 @@ case "$continue_prod" in
     echo -e "${YELLOW}Getting your site ready for development...${NC}"
     sleep 2
     source ~/.profile
-    if [[ "$bench_version" == "version-15" ]]; then
+    if [[ "$frappe_version" == "version-15" ]]; then
         nvm alias default 18
     else
         nvm alias default 16
