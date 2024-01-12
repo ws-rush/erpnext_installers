@@ -149,10 +149,10 @@ sleep 2
 
 # Check OS compatibility for Version 15
 if [[ "$frappe_version" == "version-15" ]]; then
-    if [[ "$(lsb_release -si)" != "Ubuntu" ]]; then
+    if [[ "$(lsb_release -si)" != "Ubuntu" ]] && [[ "$(lsb_release -si)" != "Debian" ]]; then
         echo -e "${RED}Your Distro is not supported for Version 15.${NC}"
         exit 1
-    elif [[ "$(lsb_release -rs)" < "22.04" ]]; then
+    elif [[ "$(lsb_release -si)" == "Ubuntu" ]] && [[ "$(lsb_release -rs)" < "22.04" ]]; then
         echo -e "${RED}Your Ubuntu version is below the minimum version required to support Version 15.${NC}"
         exit 1
     fi
