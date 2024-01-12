@@ -350,8 +350,6 @@ if [ "$install_erpnext" = "y" ] || [ "$install_erpnext" = "Y" ]; then
     adminpasswrd=$(ask_twice "Enter the Administrator password" "true")
     echo -e "\n"
     sleep 2
-    # Install expect tool only if needed
-    echo $passwrd | sudo -S apt -qq install expect -y
 
     echo -e "${YELLOW}Now setting up your site. This might take a few minutes. Please wait...${NC}"
     sleep 1
@@ -360,30 +358,7 @@ if [ "$install_erpnext" = "y" ] || [ "$install_erpnext" = "Y" ]; then
 
     sudo chmod -R o+rx /home/$(echo $USER)
 
-
-    # Create new site using expect
-    export SITE_NAME=$site_name
-    export SQL_PASSWD=$sqlpasswrd
-    export ADMIN_PASSWD=$adminpasswrd
-
-    #Set Administrator password.
-    SITE_SETUP=$(expect -c "
-    set timeout 300
-    set sitename \$env(SITE_NAME)
-    set sqlpwd \$env(SQL_PASSWD)
-    set adminpwd \$env(ADMIN_PASSWD)
-    spawn bench new-site \$sitename --install-app erpnext
-    expect \"MySQL root password:\"
-    send \"\$sqlpwd\r\"
-    expect \"Set Administrator password:\"
-    sleep 20
-    send \"\$adminpwd\r\"
-    expect \"Re-enter Administrator password:\"
-    sleep 20
-    send \"\$adminpwd\r\"
-    expect eof
-    ")
-    echo "$SITE_SETUP"
+    bench new-site $site_name --db-root-password $sqlpasswrd --admin-password $adminpasswrd --install-app erpnext
 else
     # Initiate Frappe only
     bench init frappe-bench --version $frappe_version --verbose
