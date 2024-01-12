@@ -18,7 +18,7 @@ and then reboot your machine
 ## install prerequest packages
 
 ```
-sudo apt install git openssh-server nano lsb-release -y
+sudo apt install git nano lsb-release apt-utils openssh-server -y
 sudo systemctl enable --now ssh
 sudo ufw allow ssh
 ```

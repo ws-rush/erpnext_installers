@@ -318,6 +318,8 @@ echo -e "${YELLOW}Now let's install bench${NC}"
 sleep 2
 # sudo -H pip3 install frappe-bench --break-system-packages
 pip3 install frappe-bench --break-system-packages
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
+source ~/.bashrc
 
 # continue if user select erpnext version
 if [[ "$frappe_version" == "bench-only" ]]; then
