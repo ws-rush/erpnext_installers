@@ -318,6 +318,7 @@ echo -e "${YELLOW}Now let's install bench${NC}"
 sleep 2
 # sudo -H pip3 install frappe-bench --break-system-packages
 pip3 install frappe-bench --break-system-packages
+export PATH="$PATH:$HOME/.local/bin"
 echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 source ~/.bashrc
 
