@@ -406,51 +406,6 @@ case "$continue_prod" in
     printf "${NC}\n"
     sleep 3
 
-    echo -e "${YELLOW}Would you like to install SSL? (yes/no)${NC}"
-
-    read -p "Response: " continue_ssl
-
-    continue_ssl=$(echo "$continue_ssl" | tr '[:upper:]' '[:lower:]')
-
-    case "$continue_ssl" in
-        "yes" | "y")
-            echo -e "${YELLOW}Make sure your domain name is pointed to the IP of this instance and is reachable before your proceed.${NC}"
-            sleep 3
-            # Prompt user for email
-            read -p "Enter your email address: " email_address
-
-            # Install Certbot
-            echo -e "${YELLOW}Installing Certbot...${NC}"
-            sleep 1
-            if [ "$DISTRO" == "Debian" ]; then
-                echo -e "${YELLOW}Fixing openssl package on Debian...${NC}"
-                sleep 4
-                sudo pip3 uninstall cryptography -y
-                yes | sudo pip3 install pyopenssl==22.0.0 cryptography==36.0.0
-                echo -e "${GREEN}Package fixed${NC}"
-                sleep 2
-            fi
-            # Install Certbot Clasic
-            # sudo apt install certbot python3-certbot-nginx -y
-            sudo apt install snapd -y && \
-            sudo snap install core && \
-            sudo snap refresh core && \
-            sudo snap install --classic certbot && \
-            sudo ln -s /snap/bin/certbot /usr/bin/certbot
-            
-            # Obtain and Install the certificate
-            echo -e "${YELLOW}Obtaining and installing SSL certificate...${NC}"
-            sleep 2
-            sudo certbot --nginx --non-interactive --agree-tos --email $email_address -d $site_name
-            echo -e "${GREEN}SSL certificate installed successfully.${NC}"
-            sleep 2
-            ;;
-        *)
-            echo -e "${RED}Skipping SSL installation...${NC}"
-            sleep 3
-            ;;
-    esac
-
     # Now let's reactivate virtual environment
     if [ -z "$py_version" ] || [ "$py_major" -lt 3 ] || [ "$py_major" -eq 3 -a "$py_minor" -lt 10 ]; then
         deactivate
