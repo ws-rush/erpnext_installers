@@ -317,7 +317,9 @@ fi
 echo -e "${YELLOW}Now let's install bench${NC}"
 sleep 2
 # sudo -H pip3 install frappe-bench --break-system-packages
-pip3 install frappe-bench --break-system-packages
+# pip3 install frappe-bench --break-system-packages
+sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old
+sudo pip3 install frappe-bench
 export PATH="$PATH:$HOME/.local/bin"
 echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 source ~/.bashrc
